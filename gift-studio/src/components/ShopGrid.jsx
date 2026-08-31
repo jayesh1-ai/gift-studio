@@ -14,12 +14,17 @@ const CATEGORIES = ["All", "Home", "Jewelry", "Accessories", "Cards"];
 
 export default function ShopGrid() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const { cart, addToCart } = useCart();
+  const { cart, addToCart, totalItems, totalPrice } = useCart();
 
   const filtered =
     activeCategory === "All"
       ? PRODUCTS
       : PRODUCTS.filter((p) => p.category === activeCategory);
+
+  function getQuantityInCart(id) {
+    const item = cart.find((i) => i.id === id);
+    return item ? item.quantity : 0;
+  }
 
   return (
     <section id="shop" className="max-w-6xl mx-auto px-5 py-16">
@@ -44,23 +49,31 @@ export default function ShopGrid() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filtered.map((product) => (
-          <div key={product.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-shadow">
-            <div className="h-40 bg-orange-50 rounded-lg mb-4 flex items-center justify-center text-orange-300 text-sm">
-              Product image
+        {filtered.map((product) => {
+          const qty = getQuantityInCart(product.id);
+          return (
+            <div key={product.id} className="border border-gray-200 rounded-xl p-5 hover:shadow-lg transition-shadow">
+              <div className="h-40 bg-orange-50 rounded-lg mb-4 flex items-center justify-center text-orange-300 text-sm">
+                Product image
+              </div>
+              <p className="text-xs uppercase tracking-widest text-gray-400">{product.category}</p>
+              <h3 className="font-semibold text-green-900 mt-1">{product.name}</h3>
+              <p className="text-gray-600 mt-1">₹{product.price}</p>
+              <button
+                onClick={() => addToCart(product)}
+                className="mt-4 w-full py-2 bg-green-800 text-white rounded-full text-sm hover:bg-green-900 transition-colors"
+              >
+                {qty > 0 ? `Add another (in cart: ${qty})` : "Add to cart"}
+              </button>
             </div>
-            <p className="text-xs uppercase tracking-widest text-gray-400">{product.category}</p>
-            <h3 className="font-semibold text-green-900 mt-1">{product.name}</h3>
-            <p className="text-gray-600 mt-1">₹{product.price}</p>
-            <button onClick={() => addToCart(product)} className="mt-4 w-full py-2 bg-green-800 text-white rounded-full text-sm hover:bg-green-900 transition-colors">
-              Add to cart
-            </button>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {cart.length > 0 && (
-        <p className="mt-8 text-sm text-gray-500">{cart.length} item(s) in cart</p>
+        <div className="mt-8 text-sm text-gray-600">
+          <p>{totalItems} item(s) in cart — Total: ₹{totalPrice}</p>
+        </div>
       )}
     </section>
   );
