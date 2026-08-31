@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useCart } from "../context/CartContext";
 
 const PRODUCTS = [
   { id: 1, name: "Engraved Wooden Photo Frame", price: 899, category: "Home" },
@@ -13,16 +14,12 @@ const CATEGORIES = ["All", "Home", "Jewelry", "Accessories", "Cards"];
 
 export default function ShopGrid() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [cart, setCart] = useState([]);
+  const { cart, addToCart } = useCart();
 
   const filtered =
     activeCategory === "All"
       ? PRODUCTS
       : PRODUCTS.filter((p) => p.category === activeCategory);
-
-  function addToCart(product) {
-    setCart([...cart, product]);
-  }
 
   return (
     <section id="shop" className="max-w-6xl mx-auto px-5 py-16">

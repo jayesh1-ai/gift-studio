@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Menu, X, ShoppingBag, Gift } from "lucide-react";
+import { useCart } from "../context/CartContext";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [cartCount] = useState(2);
+  const { cart } = useCart();
 
   const links = [
     { label: "Shop", href: "#shop" },
@@ -31,17 +32,14 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <button className="relative w-10 h-10 flex items-center justify-center rounded-full border border-gray-300">
             <ShoppingBag className="w-4 h-4" />
-            {cartCount > 0 && (
+            {cart.length > 0 && (
               <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
-                {cartCount}
+                {cart.length}
               </span>
             )}
           </button>
 
-          <button
-            className="md:hidden w-10 h-10 flex items-center justify-center"
-            onClick={() => setOpen(!open)}
-          >
+          <button className="md:hidden w-10 h-10 flex items-center justify-center" onClick={() => setOpen(!open)}>
             {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
