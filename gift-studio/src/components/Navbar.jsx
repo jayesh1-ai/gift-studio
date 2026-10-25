@@ -7,7 +7,8 @@ export default function Navbar() {
   const { totalItems } = useCart();
 
   const links = [
-    { label: "Shop", href: "#shop" },
+    { label: "Shop & Customize", href: "#shop" },
+    { label: "Gift Finder", href: "#finder" },
     { label: "How it works", href: "#how" },
   ];
 
@@ -49,7 +50,11 @@ export default function Navbar() {
         <ul className="md:hidden flex flex-col px-5 pb-4">
           {links.map((l) => (
             <li key={l.href}>
-              <a href={l.href} className="block py-3 border-b border-gray-100">
+              <a
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className="block py-3 border-b border-gray-100"
+              >
                 {l.label}
               </a>
             </li>

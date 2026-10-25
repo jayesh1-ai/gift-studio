@@ -1,1 +1,145 @@
 @import "tailwindcss";
+
+/* ---------- Soft, minimal colour palette ----------
+   Redefining Tailwind's own colour shades here recolours the whole site at once:
+   sage green instead of strong green, muted clay instead of bright orange,
+   warm greys and a warm off-white page. */
+@theme {
+  --color-white: #fbf9f5;
+
+  --color-green-50: #f1f5f1;
+  --color-green-100: #e3ebe4;
+  --color-green-200: #cddbcf;
+  --color-green-300: #b0c6b4;
+  --color-green-700: #5c7f69;
+  --color-green-800: #4a6b58;
+  --color-green-900: #35503f;
+
+  --color-orange-50: #fbf4ec;
+  --color-orange-100: #f6e8d8;
+  --color-orange-200: #efd6bc;
+  --color-orange-300: #e6bd96;
+  --color-orange-500: #cf8a5f;
+  --color-orange-600: #a95f3c;
+
+  --color-gray-100: #efede7;
+  --color-gray-200: #e6e3dc;
+  --color-gray-300: #d6d3cb;
+  --color-gray-400: #8c8a84;
+  --color-gray-500: #6d6b66;
+  --color-gray-600: #57554f;
+  --color-gray-700: #413f3a;
+}
+
+body {
+  background-color: var(--color-white);
+  color: var(--color-gray-700);
+}
+
+/* ---------- Product image hover animations ---------- */
+
+.pi-zoom {
+  transition: transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.pi-pop,
+.pi-tilt,
+.pi-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Image slowly zooms in on hover (card hover, or hover on the image itself) */
+  :is(.group, .pi-root):hover .pi-zoom {
+    transform: scale(1.07);
+  }
+
+  /* Cushion: a soft squish */
+  :is(.group, .pi-root):hover .pi-pop {
+    animation: pi-pop 0.7s ease;
+  }
+
+  /* Frames: a small wobble */
+  :is(.group, .pi-root):hover .pi-tilt {
+    animation: pi-tilt 0.8s ease;
+  }
+
+  /* Keychain: swings from the ring */
+  :is(.group, .pi-root):hover .pi-swing {
+    animation: pi-swing 1.2s ease-in-out;
+  }
+
+  /* Necklace: gently sways */
+  :is(.group, .pi-root):hover .pi-sway {
+    animation: pi-sway 1.6s ease-in-out infinite;
+  }
+
+  /* Mug: steam rises */
+  :is(.group, .pi-root):hover .pi-steam {
+    animation: pi-steam 1.6s ease-in-out infinite;
+  }
+
+  /* Neon: glow pulses */
+  :is(.group, .pi-root):hover .pi-neon {
+    animation: pi-neon 1.3s ease-in-out infinite;
+  }
+
+  /* LED cushion: soft warm glow pulses */
+  :is(.group, .pi-root):hover .pi-led {
+    animation: pi-led 1.4s ease-in-out infinite;
+  }
+
+  /* Lamp: light brightens */
+  :is(.group, .pi-root):hover .pi-glow {
+    animation: pi-glow 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes pi-pop {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.08, 0.94); }
+  65% { transform: scale(0.97, 1.04); }
+  100% { transform: scale(1); }
+}
+
+@keyframes pi-tilt {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(-5deg); }
+  60% { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pi-swing {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(12deg); }
+  55% { transform: rotate(-9deg); }
+  80% { transform: rotate(4deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pi-sway {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(4deg); }
+}
+
+@keyframes pi-steam {
+  0% { opacity: 0; transform: translateY(8px); }
+  40% { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+@keyframes pi-neon {
+  0%, 100% { filter: drop-shadow(0 0 3px #ff6fb5) drop-shadow(0 0 8px #ff4da6); }
+  50% { filter: drop-shadow(0 0 5px #ffa3d2) drop-shadow(0 0 16px #ff4da6); }
+}
+
+@keyframes pi-led {
+  0%, 100% { filter: drop-shadow(0 0 4px #ffc27a) drop-shadow(0 0 10px #ffb05c); }
+  50% { filter: drop-shadow(0 0 7px #ffd9a0) drop-shadow(0 0 20px #ffb05c); }
+}
+
+@keyframes pi-glow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.12); }
+}

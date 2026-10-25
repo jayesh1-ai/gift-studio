@@ -2,20 +2,17 @@ import { createContext, useContext, useReducer, useEffect } from "react";
 
 const CartContext = createContext();
 
-// Step A: Reducer function - decides HOW state changes for each action
 function cartReducer(state, action) {
   switch (action.type) {
     case "ADD_ITEM": {
       const existing = state.find((item) => item.id === action.product.id);
       if (existing) {
-        // agar product already cart mein hai, quantity badhao
         return state.map((item) =>
           item.id === action.product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
-      // naya product, quantity 1 se add karo
       return [...state, { ...action.product, quantity: 1 }];
     }
 
@@ -48,17 +45,26 @@ function cartReducer(state, action) {
 export function CartProvider({ children }) {
   const [cart, dispatch] = useReducer(cartReducer, []);
 
-  // Page load hote hi localStorage se purana cart load karo
+  // Load the saved cart when the page opens
   useEffect(() => {
-    const saved = localStorage.getItem("gift-cart");
-    if (saved) {
-      dispatch({ type: "LOAD_CART", cart: JSON.parse(saved) });
+    try {
+      const saved = localStorage.getItem("gift-cart");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) dispatch({ type: "LOAD_CART", cart: parsed });
+      }
+    } catch (err) {
+      console.warn("Could not load saved cart:", err);
     }
   }, []);
 
-  // Jab bhi cart change ho, localStorage mein save karo
+  // Save the cart whenever it changes (never crash if storage is full)
   useEffect(() => {
-    localStorage.setItem("gift-cart", JSON.stringify(cart));
+    try {
+      localStorage.setItem("gift-cart", JSON.stringify(cart));
+    } catch (err) {
+      console.warn("Could not save cart:", err);
+    }
   }, [cart]);
 
   const addToCart = (product) => dispatch({ type: "ADD_ITEM", product });
@@ -72,7 +78,16 @@ export function CartProvider({ children }) {
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, increaseQty, decreaseQty, removeFromCart, clearCart, totalItems, totalPrice }}
+      value={{
+        cart,
+        addToCart,
+        increaseQty,
+        decreaseQty,
+        removeFromCart,
+        clearCart,
+        totalItems,
+        totalPrice,
+      }}
     >
       {children}
     </CartContext.Provider>
