@@ -25,6 +25,9 @@ function handleError(err, res) {
       details: Object.values(err.errors).map((e) => e.message),
     });
   }
+  if (err.name === "CastError") {
+    return res.status(400).json({ error: "Invalid value for '" + err.path + "'" });
+  }
   console.error(err);
   return res.status(500).json({ error: "Something went wrong on the server" });
 }
