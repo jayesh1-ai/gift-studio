@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const sanitizeBody = require("./middleware/sanitize");
 const productRoutes = require("./routes/products");
+const authRoutes = require("./routes/auth");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -51,6 +52,15 @@ app.use(
   })
 );
 
+// Stricter limit for signup and login, so nobody can try thousands of passwords
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: Number(process.env.AUTH_RATE_LIMIT_MAX) || 20,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { error: "Too many login attempts. Please try again in a few minutes." },
+});
+
 // 5. Small body size + remove dangerous keys
 app.use(express.json({ limit: "10kb" }));
 app.use(sanitizeBody);
@@ -61,6 +71,7 @@ app.get("/", (req, res) => {
 });
 
 // API routes
+app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/products", productRoutes);
 
 // Unknown URL -> clean JSON instead of an HTML error page
@@ -86,6 +97,11 @@ app.use((err, req, res, next) => {
 async function start() {
   if (!process.env.MONGO_URI) {
     console.error("MONGO_URI is missing. Check your .env file.");
+    process.exit(1);
+  }
+
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+    console.error("JWT_SECRET is missing or too short (use at least 32 characters). Check your .env file.");
     process.exit(1);
   }
 
