@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Menu, X, ShoppingBag, Gift } from "lucide-react";
 import { useCart } from "../context/CartContext";
 
-export default function Navbar() {
+export default function Navbar({ onCartClick }) {
   const [open, setOpen] = useState(false);
   const { totalItems } = useCart();
 
@@ -31,7 +31,11 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-4">
-          <button className="relative w-10 h-10 flex items-center justify-center rounded-full border border-gray-300">
+          <button
+            onClick={onCartClick}
+            aria-label="Open cart"
+            className="relative w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 hover:border-green-800"
+          >
             <ShoppingBag className="w-4 h-4" />
             {totalItems > 0 && (
               <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center">
