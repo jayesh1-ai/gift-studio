@@ -1,4 +1,3 @@
-
 require("dotenv").config();
 
 const express = require("express");
@@ -13,6 +12,7 @@ const WebSocket = require("ws");
 const sanitizeBody = require("./middleware/sanitize");
 const productRoutes = require("./routes/products");
 const authRoutes = require("./routes/auth");
+const orderRoutes = require("./routes/orders"); // NEW
 
 const app = express();
 const server = http.createServer(app);
@@ -88,6 +88,7 @@ app.get("/", (req, res) => {
 // API routes
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes); // NEW
 
 // 6. WebSocket connection handling
 wss.on("connection", (ws) => {
